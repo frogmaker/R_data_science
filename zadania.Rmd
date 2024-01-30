@@ -1,0 +1,564 @@
+---
+title: "Zadania zaliczeniowe"
+output:
+  pdf_document: default
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+    math: katex
+  html_document:
+    df_print: paged
+  word_document: default
+date: "2024-01-13"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Zad 1.3 
+
+Wybieramy losowo liczbę N z zakresu od 1 do 10. Niech A oznacza zdarzenie, że N < 7, a B, że N jest liczbą parzystą. Sprawdź, czy A i B są niezależne.
+
+N : < 1; 7 >
+
+A - zdarzenie takie, że  N < 7
+
+B - zdarzenie takie,ze N jest liczbą parzystą
+
+Zdefiniujmy zbiory zdarzeń elementarnych:
+
+```{r}
+Omega <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+A <- c(1, 2, 3, 4, 5, 6)
+B <- c(2, 4, 6, 8, 10)
+`A int B` <- intersect(A , B) #iloczyn zbiorów A i B
+`A int B`
+```
+
+Warunki niezalezności zdarzeń (z definicji): 
+
+P(A | B) = P(A)
+
+P(B | A) = P(B)
+
+P($A \cap B$) = P(A) * P(B)
+
+Obliczmy zatem poszczególne prawdopodobieństwa
+
+```{r}
+`P(A)` <- length(A) / length(Omega)
+`P(A)`
+`P(B)` <- length(B) / length(Omega) 
+`P(B)`
+`P(A int B)` <- length(`A int B`) / length(Omega) 
+`P(A int B)` 
+```
+
+Widzimy zatem, że prawdopodobieństwo iloczynu zdarzeń A i B równe jest iloczynowi prawdopodobieństw zdarzeń A i B:
+
+```{r}
+`P(A)` * `P(B)` == `P(A int B)`
+```
+
+Odp. Zdarzenia A i B są niezależne.
+
+
+# zad. 1.4 
+
+Oblicz prawdopodobieństwo śmierci w katastrofie lotniczej w ciągu dwudziestu lat dla osoby, która rocznie odbywa dwadzieścia podróży lotniczych. Załóż, że prawdopodobieństwo śmierci w katastrofie lotniczej wynosi pc = 1/(4*10^6) .
+
+
+pc - prawdopodobieństwo śmierci w wyniku katastrofy
+
+N - ilość lotów (20 lotów/rok x 20 lat )
+
+```{r, message = FALSE}
+pc <- 1/(4*10^6)
+N <- 20*20
+```
+
+
+                        o
+                1-pc  /   \ pc
+                     o     .
+             1-pc  /   \ pc
+                  o     .            Prócz skrajnego ramienia po lewej stronie
+                 .                   wszystkie gałęzie oznaczają zdarzenie
+          400x  .                    polegające na śmierci w wyniku katastrofy
+               .
+              o
+      1-pc  /   \ pc 
+               
+            
+ A - pasażer przeżył
+ 
+~A - zdarzenie przeciwne do A
+
+```{r, message = FALSE}
+`P(A)` <- (1 - pc)^400
+`P(~A)` <- 1 - `P(A)`
+```
+Odp. Prawdopodobieństwo śmierci pasażera w wyniku katastrofy samolotu w jego 400-tnym locie wynosi:
+```{r, message = FALSE}
+`P(~A)`
+```
+
+# Zad. 1.5 
+
+W pudełku są dwie monety: jedna zwykła (orzeł i reszka), a druga z dwoma stronami z orłem. Wybieramy losowo jedną monetę i rzucamy nią dwa razy. Zakładając, że zdarzenie A oznacza, że w pierwszym rzucie wypadł orzeł, zdarzenie B, że orzeł wypadł w drugim rzucie, a C, że z pudełka wybrano zwykłą monetę, oblicz prawdopodobieństwa: 
+P(A | C), P(B | C), P($A \cap B$ | C), P(A), P(B) i P($A \cap B$).
+
+
+1-sza moneta : {R, O};
+
+2-ga moneta : {O, O};
+
+A - wynik pierwszego rzutu to orzeł
+
+B - wynik drugiego rzutu to orzeł
+
+C - wybrano zwykłą monetę
+
+
+                    
+                        o
+                      /   \ 
+                C   /       \  ~C
+                  /           \
+                o               o 
+            A /   \ ~A      A /   \ A
+            /       \        /      \
+           o         o       o       o
+        B/   \~B  B/  \~B B/  \B   B/  \B
+     {O,O}{O,R}{R,O}{R,R}{O,O}{O,O}{O,O}{O,O}  #wyniki rzutów
+
+
+Zdefiniujmy następujące zbiory zdarzeń elementarnych:
+
+```{r, message = FALSE}
+Omega <- c('CAB', 'CA~B', 'C~AB', 'C~A~B', '~CAB', '~CAB', '~CAB', '~CAB') #8
+A <- c('CAB', 'CA~B', '~CAB', '~CAB', '~CAB', '~CAB') #6
+B <- c('CAB', 'C~AB', '~CAB', '~CAB', '~CAB', '~CAB') #6
+C <- c('CAB', 'CA~B', 'C~AB', 'C~A~B') #4
+`A int B` <- vecsets::vintersect(A, B) #iloczyn A i B
+`A int C` <- vecsets::vintersect(A, C) #iloczyn A i C
+`B int C` <- vecsets::vintersect(B, C) #iloczyn B i C
+`A int B int C` <- vecsets::vintersect(`A int B`, C) #iloczyn A i B i C
+```
+
+Możemy zatem obliczyć poszczególne szukane prawdopodobieństwa:
+
+```{r, message = FALSE}
+`P(A)` <- length(A)/length(Omega)
+`P(A)`
+`P(B)` <- length(B)/length(Omega)
+`P(B)`
+`P(C)` <- length(C)/length(Omega)
+`P(C)`
+`P(A int B)` <- length(`A int B`)/length(Omega)
+`P(A int B)`
+`P(A int C)` <- length(`A int C`)/length(Omega)
+`P(A int C)`
+`P(B int C)` <- length(`A int C`)/length(Omega)
+`P(B int C)`
+
+```
+
+Z definicji wiemy że prawdopodobieństwo warukowe wyraża się wzorem:
+P(A|B) = P($A \cap B$) / P(B) ; P(B) != 0
+Możemy zatem obliczyć prawdopodobieństwa warunkowe P(A|C) i P(B|C):
+
+```{r, message = FALSE}
+
+`P(A|C)` <- `P(A int C)` / `P(C)`
+`P(A|C)`
+
+`P(B|C)` <- `P(B int C)` / `P(C)`
+`P(B|C)`
+```
+
+oraz P($A \cap B$ | C):
+
+```{r, message = FALSE}
+`P(A int B int C)` <- length(`A int B int C`) / length(Omega)
+`P(A int B | C)` <- `P(A int B int C)` / `P(C)`
+`P(A int B | C)`
+```
+
+
+# Zad. 2.5 
+
+Dana jest funkcja:
+
+f(x) =  0 dla x < 0; 2*exp(-Ax) dla x >= 0 
+
+(a) Wyznacz taką wartość stałej A, aby funkcja f była gęstością prawdopodobieństwa zmiennej losowej X.
+
+(b) Wyznacz dystrybuantę F tej zmiennej losowej.
+
+(c) Oblicz prawdopodobieństwa: P (X > 1), P (X 1), P (X = 1), P (1 < X <= 3), P (1 <= X <= 3). 
+
+Zaznacz obliczone wartości prawdopodobieństwa na wykresie gęstości i dystrybuanty.
+
+
+Aby dana funkcja była dystrybuantą jej całka w zadanych granicach musi równać się 1. 
+
+Funkcja f(x) z treści zadania w zakresie ( - $\infty$ ; 0 ) jest funkcją jednostają o wartości 0, zatem dystrybuantę rozważymy w zakresie < 0; $\infty$ ).  
+
+
+\begin{center}
+
+$\int_{0}^{\infty} 2exp(-Ax) \; dx \; = \; 1$ 
+ 
+$2\int_{0}^{\infty} exp(-Ax) \; dx \; = \; 1$ 
+
+$\int_{0}^{\infty} exp(-Ax) \; dx \; = \; 0.5$      
+
+{niech u = -Ax; du = -Adx}:
+
+$-1/A \int_{0}^{\infty} exp(u) \; du \; = \; 0.5$ 
+
+$\int_{0}^{\infty} exp(u) \; du \; = \; -A/2$ 
+
+$\left. exp(u)\; \right |_{0}^{\infty } \; = \; -A/2$
+
+$\left. exp(-Ax)\; \right |_{0}^{\infty} \; = \; -A/2$
+
+$exp(-A * \infty) \; - \; exp(-A * 0) \; = \; -A/2$
+
+$0 - exp(0) \; = \; -A/2$
+
+$1 \; = \; -A/2$
+
+$A \; = \;2$
+
+\end{center}
+
+Wyznaczona wartość współczynnika A wynosi 2. Możemy teraz wyznaczyć wykres gęstości prawdopodobieństwa tej zmiennej losowej: 
+
+```{r}
+two_exp <- function(x){
+  2*exp(-2*x)}
+data <- seq.int(from = 0, to = 4, by = 0.1)
+Density <- two_exp(data)              
+plot(data, Density, type = 'l')
+```
+b) Dystrybuanta F(x) jest w uproszczeniu funkcją przypisującą danemu x pole powierzchni pod wykresem funkcji gęstości takim że P(X < x). Wystarczy zatem do wyznaczenia dystrybuanty scałkować funkcję gęstości w zadanych granicach: 
+
+\begin{center}
+$F(x) = 0 \;\;\;\; dla\; t < 0; \;\;\;\;\;\; \int_{0}^{t} 2exp(-2x) \; dx \;\;\;\; dla \; t>=0$ 
+
+$\int_{0}^{t} 2exp(-2x) \; dx = 2 \int_{0}^{t} exp(-2x) \; dx$ 
+
+{niech -2x = u, oraz -2dx = du}:
+ 
+$2\int_{0}^{t} -0.5*exp(u) \; du \; = \; -\int_{0}^{t} exp(u) \; du \; = $ 
+
+$ = \; - \left. exp(u)\; \right |_{0}^{t} \; = \;- \left. exp(-2x)\; \right |_{0}^{t} \; =$      
+
+$=  - (exp(-2t) \; - \;exp(0) = \;1 - exp(-2t)$ 
+
+\end{center}
+
+Widzimy zatem, że dla x >=0 dystrybuanta jest funkcją z asymptotą równą 1 co było spodziewane.
+
+F(x) = 0 dla x < 0; 1 - exp (-2x) dla x >= 0;
+
+Możemy teraz wyznaczyć wykres dystrybuanty:
+
+```{r}
+dystrybuanta <- function(x){
+  integrate(two_exp, lower = 0, upper = x) $value     
+  }
+'F(x)' <- sapply(data, dystrybuanta)
+plot(data, `F(x)`, type = "l")
+```
+c) Możemy też obliczyć prawdopodobieństwa zadane w treści zadania:
+
+P(X = 1) = 0 (z definicji)
+
+P(X > 1) = P(X >= 1) (co wynika z powyższej równości) = 1 - F(1):
+```{r}
+1 - dystrybuanta(1)
+```
+co zaznaczamy na wykresach gęstości i dystrybuanty:
+
+```{r}
+plot(data, Density, type = 'l')
+polygon(c(data[data>=1], max(data), 1), c(Density[data>=1], 0, 0), col="red")
+
+plot(data, `F(x)`, type = "l")
+lines(seq.int(from = 1, to = 4, by = 0.1), sapply(seq.int(from = 1, to = 4,
+  by = 0.1), dystrybuanta), col = "red", lwd = 3)
+polygon(c(1,1),c(0,dystrybuanta(1)),col = "lightblue", border="green")
+text(seq.int(from = 0, to = 1, by = 0.2), dystrybuanta(1), "-" , 
+  col = "green")
+text(0.3, dystrybuanta(1.3), round( 1-dystrybuanta(1),digits = 5 ), 
+  col = "red")
+text(seq.int(from = 0, to = 1, by = 0.2), dystrybuanta(1), "-" , 
+  col = "green")
+```
+
+
+
+
+
+
+P(1 < X <= 3) = P(1 <= X <= 3) = F(3) - F(1):
+```{r}
+dystrybuanta(3) - dystrybuanta(1)
+```
+co zaznaczamy na wykresach gęstości i dystrybuanty:
+
+```{r}
+plot(data, Density, type = 'l', asp = 1, lwd = 0.51)
+cord.x <- c(1, seq.int(from = 1, to = 3, by = 0.1), 3)
+cord.y <- c(0, two_exp(seq.int(from = 1, to = 3, by = 0.1)),0)
+polygon(cord.x, cord.y, col="lightblue")
+
+
+plot(data, `F(x)`, type = "l")
+lines(seq.int(from = 1, to = 3, by = 0.1), sapply(seq.int(from = 1, to = 3, by = 0.1), 
+  dystrybuanta), col = "red", lwd = 3)
+polygon(c(1,1),c(0,dystrybuanta(1)),col = "lightblue", border="green")
+polygon(c(3,3),c(0,dystrybuanta(3)),col = "lightblue", border="green")
+text(seq.int(from = 0, to = 1, by = 0.2), dystrybuanta(1), "-" , col = "green")
+text(seq.int(from = 0, to = 3, by = 0.2), dystrybuanta(3), "-" , col = "green")
+text(0.3, dystrybuanta(1.3), round( dystrybuanta(3)-dystrybuanta(1),
+  digits = 5 ), col = "red")
+text(seq.int(from = 0, to = 1, by = 0.2), dystrybuanta(1), "-" , col = "green")
+```
+
+# Komentarz do zadań 8.1 i 8.2
+
+Metada największej wiarygodności:
+
+Ogólnie w procesie estymacji na podstawie prób xi (każde xi może być wektorem) wyznaczamy parametr lambda (w ogólnym przypadku również wektor) opisujący domniemany rozkład prawdopodobieństwa. Na podstawie tegoż rozkładu możemy z kolei określić a posteriori prawdopodobieństwo próby xi. Logicznym wydaje się postulat, aby parametr(y) lambda dobierać tak, aby zmaksymalizować prawdopodobieństwo a posteriori prób, z których je wyznaczamy. Funkcją wiarygodności nazywać możemy iloczyn prawdopodobieństwa a posteriori dla N dostępnych prób
+
+\begin{center}
+
+$L =  \prod_{i = 1}^{N} f(x_{i}, \lambda ) $
+
+lub
+
+$l = ln(L) = \sum_{i = 1}^{N} ln f(x_{i}, \lambda) $
+
+\end{center}
+
+Szukamy jej maksimum, czyli (zwykle) zera pochodnej.
+
+# Zad. 8.1
+
+Niech $X_1, X_2, X_3, X_4$ będzie prostą próbą losową z rozkładu dwumianowego $X_{i} - Bin(3, \theta )$, i = 1, 2, 3, 4. Na podstawie (realizacji) próby losowej $(x_1, x_2, x_3, x_4) = (1, 3, 2, 2)$ metodą największej wiarygodności wyznacz estymator $\hat{\theta}$ parametru $\theta$.
+
+Oznaczmy p jako prawdopodobieństwo sukcesu i 1-p jako prawdopodobieństwo porażki. Wartość p będzie szukaną wartością parametru $\theta$. 
+
+Przy trzech następujących po sobie próbach mogą wystąpić nastepujące zdarzenia elementarne:
+
+- 3 sukcesy o prawdopodobieństwie $p^{3}$ #{sss}
+
+- 2 sukcesy(s) i porażka(f) o prawdopodobieństwie $3*(1-p)p^{2}$ #{ssf, sfs, fss}
+
+- 1 sukces(s) i 2 porażki(f) o prawdopodobieństwie $3*(1-p)^{2}p$ #{sff, fsf, ffs}
+
+- 3 porażki o prawdopodobieństwie $(1-p)^{3}$ #{fff}
+
+Na podstawie próby losowej z treści zadania możemy wyznaczyć funkcję L:
+
+\begin{center}
+
+$L =  p^{3}\;*\;  3*(1-p)p^{2}\;*\;3*(1-p)p^{2}\;*\; 3*(1-p)^{2}p$
+
+$L = 27*p^{8}(1-p)^{4}$
+
+\end{center}
+
+Aby znaleźć wartość p należy wyznaczyć maksimum funkcji L, tj znaleźć miejsce zerowe pochodenj funkcji L:
+
+\begin{center}
+
+$(L)' =  0$
+
+$(27*p^{8}(1-p)^{4})' = 0$
+
+$(27*p^{8}(1-p)^{4})' = 0$
+
+$(p^{8})'(1-p)^{4}+p^{8}((1-p)^{4})' = 0$
+
+$8p^{7}(1-p)^{4}+p^{8}4(1-p)^{3} = 0$
+
+$2(1-p)-p = 0$
+
+$2 = 3p$
+
+$p = \frac{2}{3}$ 
+
+\end{center}
+
+Wyznaczony estymator parametru $\theta$ to $\frac{2}{3}$:
+```{r}
+p <- 2/3
+p
+```
+
+
+co można zaprezentować na poniższym wykresie funkcji L i zaznaczając jej maksimum:
+
+```{r}
+fun_L <- function(p){
+  27*p^8*(1-p)^4}
+p_sample <- seq.int(from = 0, to = 1, by = 0.01)
+`L(p)` <- sapply(p_sample, fun_L)
+plot(p_sample, `L(p)`)
+polygon(c(p, p),c(0.001,fun_L(p)),col = "red", border="red")
+text(2/3, 0.00025, "2/3", col = "red")
+```
+
+Mając wyznaczony estymator parametru $\theta$ możemy też przedstawić wykres rozkładu z treści zadania:
+
+```{r}
+#rozkład
+X <- seq.int(from = 0, to = 3, by = 1)
+P <- c((1-p)^3, 3*p*(1-p)^2, 3*(1-p)*p^2, p^3)
+#plot(X, P, cex = 0.7)
+barplot(P, names.arg = X)
+```
+
+
+# Zad. 8.2
+
+Niech $Y_1, Y_2, Y_3, Y_4$ będzie prostą próbą losową z rozkładu wykładniczego $Y_i - Exp(\theta)$, i = 1, 2, 3, 4. Na podstawie (realizacji) próby losowej $(y_1, y_2, y_3, y_4)$ = (1.23, 3.32, 1.98, 2.12) metodą największej wiarygodności wyznacz estymator $\hat{\theta}$ parametru $\theta$.
+
+Na podstawie próby losowej z treści zadania możemy wyznaczyć funkcję L:
+
+\begin{center}
+
+$L = \prod_{i = 1}^{4} \theta * exp(-\theta*y_i)$
+
+$L = \theta * exp(-\theta*y_1)*\theta * exp(-\theta*y_2)*\theta * exp(-\theta*y_3)*\theta * exp(-\theta*y_4)$
+
+$L = \theta^{4} * exp(-\theta*(y_1+y_2+y_3+y_4)) $
+
+$L = \theta^{4} * exp(-\theta*8.65)$
+
+\end{center}
+
+Ponownie, aby znaleźć parametr $\theta$ szukamy maksimum funkcji L, czyli miejsca zerowego jej pochodnej:
+
+\begin{center}
+
+$(L)' =  0$
+
+$ (\theta^{4} * exp(-\theta*8.65))' = 0$
+
+$ (\theta^{4})' * exp(-\theta*8.65) + \theta^{4} * (exp(-\theta*8.65))' = 0$
+
+$ 4\theta^{3} * exp(-\theta*8.65) - \theta^{4} *8.65 * exp(-\theta*8.65) = 0$
+
+$ 4 - 8.65 * \theta = 0$
+
+$ \theta = \frac{4}{8.65}$
+
+\end{center}
+
+Wartość parametru $\theta$ wynosi:
+
+```{r}
+theta_c <- 4/8.65
+theta_c
+```
+
+co można przedstawić na poniższym wykresie:
+
+```{r}
+fun_L <- function(o){
+  (o^4)*exp(-o*(8.65))}
+theta <- seq.int(from = 0, to = 2, by = 0.05)
+`L(theta)` <- sapply(theta, fun_L)
+plot(theta, `L(theta)`, type = 'l')
+polygon(c(theta_c, theta_c),c(0.0001,fun_L(theta_c)),col = "red", border="red")
+text(theta_c, 0.00005, "4/8.65", col = "red")
+```
+
+Możemy też przedstawić graficznie funkcję gęstości prawdopodobieństwa wyznaczonego rozkładu:
+
+```{r}
+#rozkład:
+roz_exp <- function(x){
+    theta_c*exp(-theta_c*x)}
+sample_roz_exp <- seq.int(from = 0, to = 2, by = 0.05)
+P <- sapply(sample_roz_exp, roz_exp)
+plot(sample_roz_exp, P, type = 'l')
+```
+
+
+# Zad. 9.1
+
+W pewnym teście wartość statystyki testowej Z wynosi -1.86. (a) Wyznacz wartość p, jeśli test jest lewostronny. (b) Wyznacz wartość p, jeśli test jest prawostronny. (c) Wyznacz wartość p, jeśli test jest dwustronny. (d) Sprawdź, w którym z powyższych przypadków hipoteza $H_{0}$ zostanie odrzucona na poziomie istotności 0.05.
+
+
+# Zad. 9.5
+
+Niech $X_1 = 3.58, X_2 = 10.03, X_3 = 4.77, X_4 = 14.66$ będzie realizacją prostej próby losowej pobranej z populacji o rozkładzie N $(\mu, \sigma^{2})$, gdzie zarówno $\mu$ jak i $\sigma$ są nieznane. Niech $H_0: \mu \ge 10,\;\; H_1: \mu < 10$. Zweryfikuj $H_0$ na poziomie istotności $\alpha = 0.05$ (przy alternatywie $H_1$).
+
+Wyznaczamy podstawowe parametry zadanej próby, jak średnia $\overline{x}$ i odchylenie standardowe SD:
+
+```{r}
+xi <- c(3.58, 10.03, 4.77, 14.66)
+N <- length(xi)
+x_mean <- mean(xi)
+SD <- sd(xi)
+```
+
+oznaczając 10 jako $\mu_0$ możemy obliczyć statystykę testową ze wzoru:
+
+\begin{center}
+
+$t = \frac{\overline{x} - \mu_0}{\frac{SD}{\sqrt{N}}}$
+
+\end{center}
+
+
+```{r}
+u0 <- 10
+t <- ((mean(xi)-u0)/(sd(xi)))*(N^0.5)
+t
+```
+Następnie należy rozważyć czy obliczona statystyka testowa znajduje się w obszarze krytycznym rozkładu z treści zadania. W związku z tym, iż dysponujemy niewielką próbą o liczebności N = 4, uzasadnionym jest wybór szczególnego przypadku rozkładu normalnego jakim jest rozkład t-studenta o N-1 stopniach swobody. Możemy teraz obliczyć wartość graniczną obszaru krytycznego dla $\alpha = 0.05$ ($t_{\alpha}$):
+
+```{r}
+alpha <- 0.05
+`t_5%` <- qt(alpha, N-1)
+`t_5%`
+#odw_dystrybuanta
+P <- seq.int(from = 0, to = 1, by = 0.005)
+t_qt <- qt(seq.int(from = 0, to = 1, by = 0.005),N-1)
+plot( P,  t_qt, type="l")
+polygon(c(alpha, alpha),c(-6,qt(alpha, N-1)),col = "red", border="red")
+polygon(c(-0.04, alpha),c(qt(alpha, N-1),qt(alpha, N-1)),col = "red", border="red")
+text(0.01, qt(alpha, N-1)+1, "-2.35", col = "red")
+```
+
+Widzimy, że $t > t_{\alpha}$ co oznacza, że nie ma podstaw do odrzucenia $H_{0}$, co można przedstawić graficznie (obszar krytyczny oznaczono kolorem czerwonym):
+
+```{r}
+#rokład
+P_dt <- dt(t_qt,N-1)
+plot(t_qt, P_dt, type="l")
+cord.x <- c(min(seq.int(from = -6, to = `t_5%`, by = 0.005)), 
+  seq.int(from = -6, to = `t_5%`, by = 0.005), 
+  max(seq.int(from = -6, to = `t_5%`, by = 0.005)))
+cord.y <- c(0, dt(seq.int(from = -6, to = `t_5%`, by = 0.005),N-1),0)
+polygon(cord.x, cord.y, col="red")
+polygon(c(t, t),c(0.02,-0.1),col = "green", border="green")
+text(t, 0.05, "t", col = "green")
+#dystrybuanta
+#plot(seq.int(from = -3, to = 3, by = 0.05), pt(seq.int(from = -3, to = 3, by = 0.05), N-1), type="l")
+
+```
+
+
+# Zad. 9.6
+
+Niech X1 = x1, X2 = x2, . . . , X81 = x81 będzie realizacją prostej próby losowej pobranej z populacji o nieznanym rozkładzie. Wiemy, że: X = 8.25, S2 = 14.6. (a) Zaproponuj test pozwalający wybrać pomiędzy H0 : mu 9 i H1 : mu < 9. (b) Wyznacz krytyczny poziom istotności (wartość p) dla zaobserwowanych danych.
