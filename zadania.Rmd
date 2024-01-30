@@ -497,6 +497,26 @@ plot(sample_roz_exp, P, type = 'l')
 
 W pewnym teście wartość statystyki testowej Z wynosi -1.86. (a) Wyznacz wartość p, jeśli test jest lewostronny. (b) Wyznacz wartość p, jeśli test jest prawostronny. (c) Wyznacz wartość p, jeśli test jest dwustronny. (d) Sprawdź, w którym z powyższych przypadków hipoteza $H_{0}$ zostanie odrzucona na poziomie istotności 0.05.
 
+```{r}
+Z <- -1.86
+```
+
+a) Dla testu lewostronnego wartość p wynosi:
+```{r}
+pnorm(Z, mean = 0, sd = 1, lower.tail = TRUE)
+```
+
+b) dla testu prawostronnego wartość p wynosi:
+```{r}
+pnorm(Z, mean = 0, sd = 1, lower.tail = FALSE)
+```
+
+c) dla testu obustronnego wartość p wynosi:
+```{r}
+2*pnorm(Z, mean = 0, sd = 1, lower.tail = TRUE)
+```
+
+d) Hipoteza zerowa zostanie odrzucona na poziomie istotności 0.05 tylko w przypadku testu lewostronnego (p < 0.05).
 
 # Zad. 9.5
 
@@ -538,6 +558,7 @@ plot( P,  t_qt, type="l")
 polygon(c(alpha, alpha),c(-6,qt(alpha, N-1)),col = "red", border="red")
 polygon(c(-0.04, alpha),c(qt(alpha, N-1),qt(alpha, N-1)),col = "red", border="red")
 text(0.01, qt(alpha, N-1)+1, "-2.35", col = "red")
+text(0.1, -5.5 , "0.05", col = "red")
 ```
 
 Widzimy, że $t > t_{\alpha}$ co oznacza, że nie ma podstaw do odrzucenia $H_{0}$, co można przedstawić graficznie (obszar krytyczny oznaczono kolorem czerwonym):
@@ -559,6 +580,4 @@ text(t, 0.05, "t", col = "green")
 ```
 
 
-# Zad. 9.6
 
-Niech X1 = x1, X2 = x2, . . . , X81 = x81 będzie realizacją prostej próby losowej pobranej z populacji o nieznanym rozkładzie. Wiemy, że: X = 8.25, S2 = 14.6. (a) Zaproponuj test pozwalający wybrać pomiędzy H0 : mu 9 i H1 : mu < 9. (b) Wyznacz krytyczny poziom istotności (wartość p) dla zaobserwowanych danych.
